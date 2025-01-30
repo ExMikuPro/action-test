@@ -66,6 +66,12 @@ jobs:
           name: firmware
           path: build
 
+      - name: Configure CMake
+        run: |
+          ls
+          cd ./build
+          ls
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
