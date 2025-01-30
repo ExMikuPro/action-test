@@ -13,15 +13,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Debug File Existence
+        run: |
+          ls -R cmake
+          file cmake/toolchain-arm-none-eabi.cmake
+
       - name: Install dependencies
         run: |
           sudo apt update
           sudo apt install -y cmake ninja-build gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi
+          ninja --version  # 确保 ninja 正确安装
 
       - name: Configure CMake
         run: |
           cmake -S . -B build -G Ninja \
-            -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm-none-eabi.cmake \
+            -DCMAKE_MAKE_PROGRAM=/usr/bin/ninja \
+            -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/cmake/toolchain-arm-none-eabi.cmake \
             -DCMAKE_BUILD_TYPE=Release
 
       - name: Build firmware
@@ -41,26 +48,3 @@ jobs:
             build/firmware.elf
             build/firmware.bin
             build/firmware.hex
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: firmware
-          path: build
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            build/firmware.elf
-            build/firmware.bin
-            build/firmware.hex
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
