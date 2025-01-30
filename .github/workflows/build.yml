@@ -44,6 +44,21 @@ jobs:
           cp build/*.bin build/firmware.hex
           cp build/*.elf build/firmware.elf
 
+      - name: Configure CMake
+        run: |
+          ls
+          cd ./build
+          ls
+
+      - name: Upload firmware artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: |
+            build/firmware.elf
+            build/firmware.bin
+            build/firmware.hex
+
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -57,11 +72,7 @@ jobs:
           name: firmware
           path: build
 
-      - name: Configure CMake
-        run: |
-          ls
-          cd ./build
-          ls
+
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
