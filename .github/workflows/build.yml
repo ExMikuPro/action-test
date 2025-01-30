@@ -80,6 +80,6 @@ jobs:
           files: |
             build/firmware.elf
             build/firmware.bin
-            build/firmware.bin
+            build/firmware.hex
         env:
           GITHUB_TOKEN: ${{ secrets.GHPA }}
