@@ -40,8 +40,9 @@ jobs:
 
       - name: Convert ELF to BIN and HEX
         run: |
-          arm-none-eabi-objcopy -O binary build/firmware.elf build/firmware.bin
-          arm-none-eabi-objcopy -O ihex build/firmware.elf build/firmware.hex
+          cp build/*.hex build/firmware.hex
+          cp build/*.bin build/firmware.hex
+          cp build/*.elf build/firmware.elf
 
       - name: Upload firmware artifacts
         uses: actions/upload-artifact@v4
