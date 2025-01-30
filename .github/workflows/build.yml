@@ -44,15 +44,6 @@ jobs:
           cp build/*.bin build/firmware.hex
           cp build/*.elf build/firmware.elf
 
-      - name: Upload firmware artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: firmware
-          path: |
-            build/firmware.elf
-            build/firmware.bin
-            build/firmware.hex
-
   release:
     needs: build
     runs-on: ubuntu-latest
