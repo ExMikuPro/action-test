@@ -1,0 +1,66 @@
+name: Build and Release STM32 Firmware
+
+on:
+  push:
+    tags:
+      - "v*"  # 仅当 push tag 时触发，例如 v1.0.0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y cmake ninja-build gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm-none-eabi.cmake \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build firmware
+        run: |
+          cmake --build build --parallel
+
+      - name: Convert ELF to BIN and HEX
+        run: |
+          arm-none-eabi-objcopy -O binary build/firmware.elf build/firmware.bin
+          arm-none-eabi-objcopy -O ihex build/firmware.elf build/firmware.hex
+
+      - name: Upload firmware artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: |
+            build/firmware.elf
+            build/firmware.bin
+            build/firmware.hex
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: firmware
+          path: build
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build/firmware.elf
+            build/firmware.bin
+            build/firmware.hex
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
