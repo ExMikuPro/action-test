@@ -78,6 +78,6 @@ jobs:
           files: |
             build/firmware.elf
             build/firmware.bin
-            build/firmware.hex
+            build/firmware.bin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
