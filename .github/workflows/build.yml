@@ -3,7 +3,7 @@ name: Build and Release STM32 Firmware
 on:
   push:
     tags:
-      - "v*"  # 仅当 push tag 时触发，例如 v1.0.0
+      - "v*"
 
 jobs:
   build:
@@ -82,4 +82,4 @@ jobs:
             build/firmware.bin
             build/firmware.hex
         env:
-          GITHUB_TOKEN: ${{ secrets.GHPA }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
