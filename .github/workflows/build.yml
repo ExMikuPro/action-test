@@ -41,7 +41,7 @@ jobs:
       - name: Convert ELF to BIN and HEX
         run: |
           cp build/*.hex build/firmware.hex
-          cp build/*.bin build/firmware.hex
+          cp build/*.bin build/firmware.bin
           cp build/*.elf build/firmware.elf
 
       - name: Configure CMake
