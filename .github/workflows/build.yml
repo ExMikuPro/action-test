@@ -26,29 +26,16 @@ jobs:
         run: |
           cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B build -DPROJECT_NAME="firmware"
 
-
       - name: Build firmware
         run: |
           cmake --build build --parallel
           
-          
-      - name: Configure CMake
-        run: |
-          ls
-          cd ./build
-          ls
 
       - name: Convert ELF to BIN and HEX
         run: |
           cp build/*.hex build/firmware.hex
           cp build/*.bin build/firmware.bin
           cp build/*.elf build/firmware.elf
-
-      - name: Configure CMake
-        run: |
-          ls
-          cd ./build
-          ls
 
       - name: Upload firmware artifacts
         uses: actions/upload-artifact@v4
@@ -71,8 +58,6 @@ jobs:
         with:
           name: firmware
           path: build
-
-
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
